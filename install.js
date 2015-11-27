@@ -20,17 +20,10 @@ var path = require('path')
 var request = require('request')
 var rimraf = require('rimraf')
 var urlLib = require('url')
-var util = require('util')
 var which = require('which')
+var downloadUrl;
 
-// allow to specify a completely custom download url
-var customDownloadUrl = process.env.PHANTOMJS2_DOWNLOAD_URL || false
-var url = process.platform === 'win32' ? 'https://github.com/gskachkov/phantomjs/releases/download/' : 'https://github.com/bprodoehl/phantomjs/releases/download/'
-var systemPrefix = process.platform === 'win32' ? '-x86' : ''
-var cdnUrl = process.env.PHANTOMJS_CDNURL || url
 var phantomVersion = process.env.PHANTOMJS2_VERSION || helper.version
-var downloadUrl = cdnUrl + phantomVersion + systemPrefix + '/phantomjs-' + phantomVersion + '-'
-
 var originalPath = process.env.PATH
 
 // If the process exits without going through exit(), then we did not complete.
@@ -111,14 +104,14 @@ whichDeferred.promise
 
     // Can't use a global version so start a download.
     
-    if (customDownloadUrl) {
-      downloadUrl = customDownloadUrl
+    if (process.env.PHANTOMJS2_DOWNLOAD_URL) {
+      downloadUrl = process.env.PHANTOMJS2_DOWNLOAD_URL
     } else if (process.platform === 'linux' && process.arch === 'x64') {
-      downloadUrl += 'u1404-x86_64.zip'
+      downloadUrl = "https://github.com/evolution-gaming/phantomjs2/releases/download/v2.0.0/phantomjs2-centos.zip";
     } else if (process.platform === 'darwin' || process.platform === 'openbsd' || process.platform === 'freebsd') {
-      downloadUrl += 'macosx.zip'
+      downloadUrl = "https://github.com/evolution-gaming/phantomjs2/releases/download/v2.0.0/phantomjs-2.0.0-20141016-macosx.zip";
     } else if (process.platform === 'win32') {
-      downloadUrl += 'win-x86.zip'
+      downloadUrl = "https://github.com/evolution-gaming/phantomjs2/releases/download/v2.0.0/phantomjs-2.0.0-20141016-win-x86.zip";
     } else {
       console.error('Unexpected platform or architecture:', process.platform, process.arch)
       exit(1)
